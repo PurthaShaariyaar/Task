@@ -34,7 +34,7 @@ app.get('/tasks/:id/activities', (req, res) => {
  * Update the activitiesByTaskId with the updated activities
  * Send a status of OK with the updated activities
  */
-app.post('/tasks/:id/activities', (req, res) => {
+app.post('/tasks/:id/activities', async (req, res) => {
   const activityId = randomBytes(4).toString('hex');
   const { activity } = req.body;
 
@@ -44,7 +44,14 @@ app.post('/tasks/:id/activities', (req, res) => {
 
   activitiesByTaskId[req.params.id] = activities;
 
-  // TODO: Event Bus Async Await Functionality
+  await axios.post('http://localhost:4005/events', {
+    type: 'ActivityCreated',
+    data: {
+      id: activityId,
+      activity,
+      taskId: req.params.id
+    }
+  });
 
   res.status(201).send(activities);
 });
@@ -52,6 +59,9 @@ app.post('/tasks/:id/activities', (req, res) => {
 /**
  * Route handler POST for posting any received events from the event-bus
  */
+app.post('/events', (req, res) => {
+  console.log('Received event.', req.body.type);
+});
 
 // Start the server and listen on port 4001
 app.listen(4001, () => {
