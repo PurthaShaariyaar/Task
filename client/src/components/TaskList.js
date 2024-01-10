@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ActivityCreate from './ActivityCreate';
+import ActivityList from './ActivityList';
+
 
 const TaskList = () => {
 
@@ -25,6 +28,12 @@ const TaskList = () => {
       >
         <div className='card-body'>
           {task.name}
+          <ActivityList
+            activities={task.activities}
+          />
+          <ActivityCreate
+            taskId={task.id}
+          />
         </div>
       </div>
     );
